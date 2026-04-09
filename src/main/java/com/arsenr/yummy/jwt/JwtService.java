@@ -12,5 +12,6 @@ public interface JwtService {
     <T> T extractClaim(String token, Function<Claims, T> claimsResolver);
     Boolean validateToken(String token, UserDetails userDetails);
     String generateToken(UserDetails userDetails);
-    String generateRefreshToken(UserDetails userDetails);
+    boolean isTokenStructurallyValid(String token);
+    long getExpirationMillis(String token);
 }

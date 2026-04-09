@@ -1,10 +1,12 @@
 package com.arsenr.yummy.jwt;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +18,10 @@ import java.util.function.Function;
 
 @Service
 public class JwtServiceImpl implements JwtService {
-    public static final String JWT_SECRET = "5b4229ea4e3886d9fddafe27d0e6467f139970b0acb52701cb79d30823215027";
+    @Value("${application.security.jwt.secret-key}")
+    private String JWT_SECRET;
+    @Value("${application.security.jwt.expiration}")
+    private long JWT_EXPIRATION;
 
     @Override
     public String extractUsername(String token) {
@@ -34,13 +39,6 @@ public class JwtServiceImpl implements JwtService {
         return claimsResolver.apply(claims);
     }
 
-    private Claims extractAllClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-    }
 
     private Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
@@ -58,35 +56,44 @@ public class JwtServiceImpl implements JwtService {
         return createToken(claims, userDetails);
     }
 
-    @Override
-    public String generateRefreshToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>();
-        return createRefreshToken(claims, userDetails);
-    }
 
     private String createToken(Map<String, Object> claims, UserDetails userDetails) {
         return Jwts.builder()
                 .setClaims(claims)
+                .claim("roles", userDetails.getAuthorities())
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 86400000))
+                .setExpiration(new Date(System.currentTimeMillis() + JWT_EXPIRATION))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    private String createRefreshToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        return Jwts.builder()
-                .setClaims(extraClaims)
-                .setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 604800000))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
-                .compact();
-
+    private Claims extractAllClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 
     private Key getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(JWT_SECRET);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public boolean isTokenStructurallyValid(String token) {
+        try {
+            extractAllClaims(token); // throws if invalid
+            return !isTokenExpired(token);
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    /** How many milliseconds until the token expires. -1 if already expired. */
+    public long getExpirationMillis(String token) {
+        Date expiration = extractClaim(token, Claims::getExpiration);
+        long diff = expiration.getTime() - System.currentTimeMillis();
+        return Math.max(diff, -1);
     }
 }
