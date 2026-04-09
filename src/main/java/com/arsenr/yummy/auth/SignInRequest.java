@@ -1,4 +1,4 @@
-package com.arsenr.yummy.payload.request;
+package com.arsenr.yummy.auth;
 
 public record SignInRequest(
         String email,

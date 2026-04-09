@@ -1,11 +1,13 @@
 package com.arsenr.yummy.auth;
 
-import com.arsenr.yummy.payload.request.SignInRequest;
-import com.arsenr.yummy.payload.request.SignUpRequest;
-import com.arsenr.yummy.payload.response.JwtResponse;
-import org.springframework.http.ResponseEntity;
+import com.arsenr.yummy.jwt.JwtResponse;
+import com.arsenr.yummy.token.RefreshTokenRequest;
+import com.arsenr.yummy.token.TokenValidationResponse;
 
 public interface AuthService {
     JwtResponse signUp(SignUpRequest signUpRequest);
     JwtResponse signIn(SignInRequest signInRequest);
+    JwtResponse refreshToken(RefreshTokenRequest refreshTokenRequest);
+    TokenValidationResponse verifyToken(String token);
+    void logout(String email);
 }

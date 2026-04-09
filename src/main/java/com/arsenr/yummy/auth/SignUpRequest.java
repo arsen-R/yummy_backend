@@ -1,4 +1,4 @@
-package com.arsenr.yummy.payload.request;
+package com.arsenr.yummy.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

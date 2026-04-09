@@ -1,7 +1,7 @@
 package com.arsenr.yummy.handler;
 
+import com.arsenr.yummy.exception.TokenException;
 import com.arsenr.yummy.exception.UserRegistrationException;
-import com.arsenr.yummy.payload.response.ErrorResponse;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -53,6 +53,17 @@ public class GlobalExceptionHandler {
                 .error(UsernameNotFoundException.class.getSimpleName())
                 .message(e.getMessage())
                 .status(HttpStatus.NOT_FOUND.value())
+                .timestamp(Instant.now())
+                .build();
+    }
+
+    @ExceptionHandler(TokenException.class)
+    public ErrorResponse handleTokenException(TokenException e) {
+        log.warn("Token Exception: ", e);
+        return ErrorResponse.builder()
+                .error(TokenException.class.getSimpleName())
+                .message(e.getMessage())
+                .status(HttpStatus.UNAUTHORIZED.value())
                 .timestamp(Instant.now())
                 .build();
     }

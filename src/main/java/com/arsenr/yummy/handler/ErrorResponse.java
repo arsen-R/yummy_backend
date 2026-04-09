@@ -1,4 +1,4 @@
-package com.arsenr.yummy.payload.response;
+package com.arsenr.yummy.handler;
 
 import lombok.Builder;
 
