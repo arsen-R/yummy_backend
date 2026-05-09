@@ -2,12 +2,15 @@ package com.arsenr.yummy.recipe;
 
 import com.arsenr.yummy.common.PageResponse;
 import com.arsenr.yummy.user.User;
+import com.arsenr.yummy.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,12 +20,15 @@ import java.util.Objects;
 public class RecipeServiceImpl implements RecipeService {
     private final RecipeRepository recipeRepository;
     private final RecipeMapper recipeMapper;
+    private final UserRepository userRepository;
 
     public RecipeServiceImpl(
             RecipeRepository recipeRepository,
-            RecipeMapper recipeMapper) {
+            RecipeMapper recipeMapper,
+            UserRepository userRepository) {
         this.recipeRepository = recipeRepository;
         this.recipeMapper = recipeMapper;
+        this.userRepository = userRepository;
     }
 
 
@@ -46,26 +52,28 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public RecipeResponseDto getRecipeById(Long recipeId) {
-        return recipeRepository.findRecipeByRecipeId(recipeId)
+        return recipeRepository.findRecipeById(recipeId)
                 .map(recipeMapper::recipeToRecipeResponseDto)
                 .orElseThrow(() -> new EntityNotFoundException("No recipe found with id: " + recipeId));
     }
 
     @Override
-    public RecipeResponseDto saveRecipe(RecipeRequestDto recipeRequestDto, Authentication connectedUser) {
-        User user = (User) connectedUser.getPrincipal();
+    public RecipeResponseDto saveRecipe(RecipeRequestDto recipeRequestDto, UserDetails userDetails) {
+        User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow(() ->
+                new UsernameNotFoundException("User not found with username: " + userDetails.getUsername()));
         Recipe recipe = recipeMapper.recipeRequestDtoToRecipe(recipeRequestDto);
         recipe.setOwner(user);
         return recipeMapper.recipeToRecipeResponseDto(recipeRepository.save(recipe));
     }
 
     @Override
-    public RecipeResponseDto updateRecipe(Long recipeId, RecipeRequestDto recipeRequestDto, Authentication connectedUser) {
-
-        Recipe recipe = recipeRepository.findRecipeByRecipeId(recipeId)
+    public RecipeResponseDto updateRecipe(Long recipeId, RecipeRequestDto recipeRequestDto, UserDetails userDetails) {
+        User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow(() ->
+                new UsernameNotFoundException("User not found with username: " + userDetails.getUsername()));
+        Recipe recipe = recipeRepository.findRecipeById(recipeId)
                 .orElseThrow(() -> new EntityNotFoundException("No recipe found with id: " + recipeId));
 
-        if (!Objects.equals(recipe.getCreatedBy(), connectedUser.getName())) {
+        if (!Objects.equals(recipe.getOwner().getEmail(), user.getEmail())) {
             throw new AccessDeniedException("You do not own this recipe");
         }
 
@@ -79,8 +87,10 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public void deleteRecipeById(Long recipeId) {
-        recipeRepository.delete(recipeRepository.findRecipeByRecipeId(recipeId)
+    public void deleteRecipeById(Long recipeId, UserDetails userDetails) {
+        User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow(() ->
+                new UsernameNotFoundException("User not found with username: " + userDetails.getUsername()));
+        recipeRepository.delete(recipeRepository.findRecipeById(recipeId)
                 .orElseThrow(() -> new EntityNotFoundException("No recipe found with id: " + recipeId)));
     }
 }

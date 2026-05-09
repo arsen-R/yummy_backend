@@ -1,6 +1,9 @@
 package com.arsenr.yummy.user;
 
+import com.arsenr.yummy.role.Role;
+
 import java.time.Instant;
+import java.util.Set;
 
 public record UserDto(
         Long id,
@@ -12,9 +15,6 @@ public record UserDto(
         String email,
         Instant createdAt,
         Instant updatedAt,
-        Boolean isAccountNonExpired,
-        Boolean isAccountNonLocked,
-        Boolean isCredentialsNonExpired,
-        Boolean isEnabled
+        Set<Role> roles
 ) {
 }

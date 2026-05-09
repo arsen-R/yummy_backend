@@ -190,6 +190,16 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
+    public User(String firstName, String lastName, String displayName, String userName, String email, String password, Set<Role> roles) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.displayName = displayName;
+        this.userName = userName;
+        this.email = email;
+        this.password = password;
+        this.roles = roles;
+    }
+
     public Instant getUpdatedAt() {
         return updatedAt;
     }
@@ -369,5 +379,37 @@ public class User implements UserDetails {
 
     public void setRecipes(List<Recipe> recipes) {
         this.recipes = recipes;
+    }
+
+    public Boolean getAccountNonExpired() {
+        return isAccountNonExpired;
+    }
+
+    public void setAccountNonExpired(Boolean accountNonExpired) {
+        isAccountNonExpired = accountNonExpired;
+    }
+
+    public Boolean getAccountNonLocked() {
+        return isAccountNonLocked;
+    }
+
+    public void setAccountNonLocked(Boolean accountNonLocked) {
+        isAccountNonLocked = accountNonLocked;
+    }
+
+    public Boolean getCredentialsNonExpired() {
+        return isCredentialsNonExpired;
+    }
+
+    public void setCredentialsNonExpired(Boolean credentialsNonExpired) {
+        isCredentialsNonExpired = credentialsNonExpired;
+    }
+
+    public Boolean getEnabled() {
+        return isEnabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        isEnabled = enabled;
     }
 }

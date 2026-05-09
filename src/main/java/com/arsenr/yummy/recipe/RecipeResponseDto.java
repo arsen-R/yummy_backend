@@ -1,5 +1,7 @@
 package com.arsenr.yummy.recipe;
 
+import com.arsenr.yummy.user.UserDto;
+
 import java.time.Instant;
 
 public record RecipeResponseDto(
@@ -10,7 +12,8 @@ public record RecipeResponseDto(
         Integer totalCookTime,
         Integer numService,
         Instant createdAt,
-        Instant updatedAt
+        Instant updatedAt,
+        UserDto createdBy
 ) {
 
 }

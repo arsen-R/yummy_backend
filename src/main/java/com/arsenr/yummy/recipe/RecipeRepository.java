@@ -8,7 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface RecipeRepository extends JpaRepository<Recipe, Long> {
-    List<Recipe> findByCreatedBy(String createdBy);
-    Optional<Recipe> findRecipeByRecipeId(Long recipeId);
-    Boolean existsByRecipeId(Long recipeId);
+    Optional<Recipe> findRecipeById(Long id);
+    Boolean existsRecipeById(Long recipeId);
 }

@@ -3,7 +3,6 @@ package com.arsenr.yummy.recipe;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = "spring")
 public interface RecipeMapper {
     RecipeMapper INSTANCE = Mappers.getMapper(RecipeMapper.class);
 
