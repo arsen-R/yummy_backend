@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -81,7 +80,7 @@ public class RecipeServiceImpl implements RecipeService {
         recipe.setDescription(recipeRequestDto.description());
         recipe.setNumService(recipeRequestDto.numService());
         recipe.setPrepCookTime(recipeRequestDto.prepCookTime());
-        recipe.setTotalCookTime(recipeRequestDto.totalCookTime());
+        recipe.setCookTime(recipeRequestDto.totalCookTime());
 
         return recipeMapper.recipeToRecipeResponseDto(recipeRepository.save(recipe));
     }
