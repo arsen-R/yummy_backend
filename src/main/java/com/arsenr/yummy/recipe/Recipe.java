@@ -1,5 +1,6 @@
 package com.arsenr.yummy.recipe;
 
+import com.arsenr.yummy.section.Section;
 import com.arsenr.yummy.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -7,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -20,7 +22,7 @@ public class Recipe {
     @Column(length = 1000)
     private String description;
     private Integer prepCookTime;
-    private Integer totalCookTime;
+    private Integer cookTime;
     private Integer numService;
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
@@ -31,34 +33,45 @@ public class Recipe {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Section> sections;
 
     public Recipe() {
     }
 
-    public Recipe(Long id, String title, String description, Integer totalCookTime, Integer numService, Instant createdAt, Instant updatedAt) {
+    public Recipe(Long id, String title, String description, Integer prepCookTime, Integer cookTime, Integer numService, Instant createdAt, Instant updatedAt, User owner, List<Section> sections) {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.totalCookTime = totalCookTime;
+        this.prepCookTime = prepCookTime;
+        this.cookTime = cookTime;
         this.numService = numService;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.owner = owner;
+        this.sections = sections;
     }
 
-    public Recipe(String title, String description, Integer totalCookTime, Integer numService, Instant createdAt, Instant updatedAt) {
+    public Recipe(String title, String description, Integer prepCookTime,  Integer cookTime, Integer numService, Instant createdAt, Instant updatedAt, User owner, List<Section> sections) {
         this.title = title;
         this.description = description;
-        this.totalCookTime = totalCookTime;
+        this.prepCookTime = prepCookTime;
+        this.cookTime = cookTime;
         this.numService = numService;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.owner = owner;
+        this.sections = sections;
     }
 
-    public Recipe(String title, String description, Integer totalCookTime, Integer numService) {
+    public Recipe(String title, String description, Integer prepCookTime,  Integer cookTime, Integer numService, User owner, List<Section> sections) {
         this.title = title;
         this.description = description;
-        this.totalCookTime = totalCookTime;
+        this.prepCookTime = prepCookTime;
+        this.cookTime = cookTime;
         this.numService = numService;
+        this.owner = owner;
+        this.sections = sections;
     }
 
     public Long getId() {
@@ -86,11 +99,11 @@ public class Recipe {
     }
 
     public Integer getTotalTimeMinutes() {
-        return totalCookTime;
+        return cookTime;
     }
 
     public void setTotalTimeMinutes(Integer totalTimeMinutes) {
-        this.totalCookTime = totalTimeMinutes;
+        this.cookTime = totalTimeMinutes;
     }
 
     public Integer getNumService() {
@@ -125,12 +138,12 @@ public class Recipe {
         this.prepCookTime = prepCookTime;
     }
 
-    public Integer getTotalCookTime() {
-        return totalCookTime;
+    public Integer getCookTime() {
+        return cookTime;
     }
 
-    public void setTotalCookTime(Integer totalCookTime) {
-        this.totalCookTime = totalCookTime;
+    public void setCookTime(Integer totalCookTime) {
+        this.cookTime = totalCookTime;
     }
 
     public User getOwner() {
@@ -141,16 +154,33 @@ public class Recipe {
         this.owner = owner;
     }
 
+    public List<Section> getSections() {
+        return sections;
+    }
+
+    public void setSections(List<Section> sections) {
+        this.sections = sections;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Recipe recipe = (Recipe) o;
-        return Objects.equals(id, recipe.id) && Objects.equals(title, recipe.title) && Objects.equals(description, recipe.description) && Objects.equals(totalCookTime, recipe.totalCookTime) && Objects.equals(numService, recipe.numService) && Objects.equals(createdAt, recipe.createdAt) && Objects.equals(updatedAt, recipe.updatedAt);
+        return Objects.equals(id, recipe.id) &&
+                Objects.equals(title, recipe.title) &&
+                Objects.equals(description, recipe.description) &&
+                Objects.equals(prepCookTime, recipe.prepCookTime) &&
+                Objects.equals(cookTime, recipe.cookTime) &&
+                Objects.equals(numService, recipe.numService) &&
+                Objects.equals(createdAt, recipe.createdAt) &&
+                Objects.equals(updatedAt, recipe.updatedAt) &&
+                Objects.equals(owner, recipe.owner) &&
+                Objects.equals(sections, recipe.sections);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, description, totalCookTime, numService, createdAt, updatedAt);
+        return Objects.hash(id, title, description, prepCookTime, cookTime, numService, createdAt, updatedAt,  owner, sections);
     }
 
     @Override
@@ -159,10 +189,13 @@ public class Recipe {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", totalTimeMinutes=" + totalCookTime +
+                ", prepCookTime=" + prepCookTime +
+                ", cookTime=" + cookTime +
                 ", numService=" + numService +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
+                ", owner=" + owner +
+                ", sections=" + sections +
                 '}';
     }
 }
