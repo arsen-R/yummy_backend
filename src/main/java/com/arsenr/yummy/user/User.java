@@ -1,5 +1,6 @@
 package com.arsenr.yummy.user;
 
+import com.arsenr.yummy.recipe.Recipe;
 import com.arsenr.yummy.role.Role;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -51,6 +52,8 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Recipe> recipes = new ArrayList<>();
 
     public User() {
     }
@@ -182,6 +185,16 @@ public class User implements UserDetails {
         this.displayName = displayName;
         this.userName = userName;
         this.bio = bio;
+        this.email = email;
+        this.password = password;
+        this.roles = roles;
+    }
+
+    public User(String firstName, String lastName, String displayName, String userName, String email, String password, Set<Role> roles) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.displayName = displayName;
+        this.userName = userName;
         this.email = email;
         this.password = password;
         this.roles = roles;
@@ -338,6 +351,65 @@ public class User implements UserDetails {
                 ", isCredentialsNonExpired=" + isCredentialsNonExpired +
                 ", isEnabled=" + isEnabled +
                 ", role=" + roles +
+                ", recipes= " + recipes +
                 '}';
+    }
+
+    public void addRecipe(Recipe recipe) {
+        recipes.add(recipe);
+        recipe.setOwner(this);       // keep both sides in sync
+    }
+
+    public void removeRecipe(Recipe recipe) {
+        recipes.remove(recipe);
+        recipe.setOwner(null);
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public List<Recipe> getRecipes() {
+        return recipes;
+    }
+
+    public void setRecipes(List<Recipe> recipes) {
+        this.recipes = recipes;
+    }
+
+    public Boolean getAccountNonExpired() {
+        return isAccountNonExpired;
+    }
+
+    public void setAccountNonExpired(Boolean accountNonExpired) {
+        isAccountNonExpired = accountNonExpired;
+    }
+
+    public Boolean getAccountNonLocked() {
+        return isAccountNonLocked;
+    }
+
+    public void setAccountNonLocked(Boolean accountNonLocked) {
+        isAccountNonLocked = accountNonLocked;
+    }
+
+    public Boolean getCredentialsNonExpired() {
+        return isCredentialsNonExpired;
+    }
+
+    public void setCredentialsNonExpired(Boolean credentialsNonExpired) {
+        isCredentialsNonExpired = credentialsNonExpired;
+    }
+
+    public Boolean getEnabled() {
+        return isEnabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        isEnabled = enabled;
     }
 }

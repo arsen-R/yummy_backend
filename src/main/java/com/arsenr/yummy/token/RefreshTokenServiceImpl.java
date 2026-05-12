@@ -4,10 +4,8 @@ import com.arsenr.yummy.exception.TokenException;
 import com.arsenr.yummy.jwt.JwtService;
 import com.arsenr.yummy.user.User;
 import com.arsenr.yummy.user.UserRepository;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;

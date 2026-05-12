@@ -2,6 +2,7 @@ package com.arsenr.yummy.handler;
 
 import com.arsenr.yummy.exception.TokenException;
 import com.arsenr.yummy.exception.UserRegistrationException;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,7 @@ public class GlobalExceptionHandler {
                 .details(errors)
                 .status(HttpStatus.BAD_REQUEST.value())
                 .timestamp(Instant.now())
+                .path(e.getNestedPath())
                 .build();
     }
 
@@ -66,5 +68,15 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.UNAUTHORIZED.value())
                 .timestamp(Instant.now())
                 .build();
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ErrorResponse handleExpiredJwtException(ExpiredJwtException e) {
+        log.warn("Expired JWT Exception: ", e);
+        return ErrorResponse.of(
+                HttpStatus.UNAUTHORIZED.value(),
+                HttpStatus.UNAUTHORIZED.getReasonPhrase(),
+                e.getMessage()
+        );
     }
 }
