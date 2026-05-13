@@ -15,18 +15,6 @@ public class PageResponse<T> {
     private boolean first;
     private boolean last;
 
-    public PageResponse() {
-    }
-
-    public PageResponse(List<T> content, int number, int size, long totalElements, int totalPages, boolean first, boolean last) {
-        this.content = content;
-        this.number = number;
-        this.size = size;
-        this.totalElements = totalElements;
-        this.totalPages = totalPages;
-        this.first = first;
-        this.last = last;
-    }
 
     public List<T> getContent() {
         return content;

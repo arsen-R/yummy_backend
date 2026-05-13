@@ -38,15 +38,15 @@ public class RecipeServiceImpl implements RecipeService {
         List<RecipeResponseDto> recipeResponse = recipePage.stream()
                 .map(recipeMapper::recipeToRecipeResponseDto)
                 .toList();
-        return new PageResponse<>(
-                recipeResponse,
-                recipePage.getNumber(),
-                recipePage.getSize(),
-                recipePage.getTotalElements(),
-                recipePage.getTotalPages(),
-                recipePage.isFirst(),
-                recipePage.isLast()
-        );
+        return PageResponse.<RecipeResponseDto>builder()
+                .content(recipeResponse)
+                .number(recipePage.getNumber())
+                .size(recipePage.getSize())
+                .totalElements(recipePage.getTotalElements())
+                .totalPages(recipePage.getTotalPages())
+                .first(recipePage.isFirst())
+                .last(recipePage.isLast())
+                .build();
     }
 
     @Override
