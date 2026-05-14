@@ -16,6 +16,6 @@ public class TokenValidationResponse {
     private boolean valid;
     private String  email;
     private Set<Role> roles;
-    private long expiresIn;   // seconds remaining (-1 if invalid)
+    private long expiresIn;
     private String  message;
 }

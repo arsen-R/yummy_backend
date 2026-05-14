@@ -4,7 +4,6 @@ import lombok.Builder;
 
 import java.util.Objects;
 
-@Builder
 public class RefreshTokenRequest {
     private String refreshToken;
 
