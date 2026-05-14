@@ -49,19 +49,19 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public JwtResponse signUp(SignUpRequest signUpRequest) {
-        boolean isUserExist = userRepository.existsByEmail(signUpRequest.email());
+        boolean isUserExist = userRepository.existsByEmail(signUpRequest.getEmail());
         if (isUserExist) {
             throw new UserRegistrationException("Invalid Registration Request");
         }
 
         User user = new User();
-        user.setEmail(signUpRequest.email().toLowerCase().trim());
-        user.setPassword(bCryptPasswordEncoder.encode(signUpRequest.password().trim()));
-        user.setFirstName(signUpRequest.firstName());
-        user.setLastName(signUpRequest.lastName());
-        user.setDisplayName(signUpRequest.displayName());
-        user.setBio(signUpRequest.bio());
-        user.setUserName(signUpRequest.username());
+        user.setEmail(signUpRequest.getEmail().toLowerCase().trim());
+        user.setPassword(bCryptPasswordEncoder.encode(signUpRequest.getPassword().trim()));
+        user.setFirstName(signUpRequest.getFirstName());
+        user.setLastName(signUpRequest.getLastName());
+        user.setDisplayName(signUpRequest.getDisplayName());
+        user.setBio(signUpRequest.getBio());
+        user.setUserName(signUpRequest.getUsername());
 
         Set<Role> roles = new HashSet<>();
         Role role = roleRepository.findByRoleName(RoleName.USER)
@@ -83,7 +83,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public JwtResponse signIn(SignInRequest signInRequest) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(signInRequest.email(), signInRequest.password())
+                new UsernamePasswordAuthenticationToken(signInRequest.getEmail(), signInRequest.getPassword())
         );
         User user = (User) authentication.getPrincipal();
         String jwtToken = jwtService.generateToken(user);

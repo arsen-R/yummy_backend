@@ -76,19 +76,17 @@ public class RecipeServiceImpl implements RecipeService {
             throw new AccessDeniedException("You do not own this recipe");
         }
 
-        recipe.setTitle(recipeRequestDto.title());
-        recipe.setDescription(recipeRequestDto.description());
-        recipe.setNumService(recipeRequestDto.numService());
-        recipe.setPrepCookTime(recipeRequestDto.prepCookTime());
-        recipe.setCookTime(recipeRequestDto.totalCookTime());
+        recipe.setTitle(recipeRequestDto.getTitle());
+        recipe.setDescription(recipeRequestDto.getDescription());
+        recipe.setNumService(recipeRequestDto.getNumService());
+        recipe.setPrepCookTime(recipeRequestDto.getPrepCookTime());
+        recipe.setCookTime(recipeRequestDto.getTotalCookTime());
 
         return recipeMapper.recipeToRecipeResponseDto(recipeRepository.save(recipe));
     }
 
     @Override
     public void deleteRecipeById(Long recipeId, UserDetails userDetails) {
-        User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow(() ->
-                new UsernameNotFoundException("User not found with username: " + userDetails.getUsername()));
         recipeRepository.delete(recipeRepository.findRecipeById(recipeId)
                 .orElseThrow(() -> new EntityNotFoundException("No recipe found with id: " + recipeId)));
     }
