@@ -2,7 +2,6 @@ package com.arsenr.yummy.recipe;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Builder;
 
 import java.util.Objects;
 
@@ -11,17 +10,21 @@ public class RecipeRequestDto {
     private String title;
     private String description;
     private Integer prepCookTime;
-    private Integer totalCookTime;
+    private Integer cookTime;
     @Min(value = 1, message = "Servings must be at least 1")
     private Integer numService;
 
     public RecipeRequestDto() {}
 
-    public RecipeRequestDto(String title, String description, Integer prepCookTime, Integer totalCookTime, Integer numService) {
+    public RecipeRequestDto(String title,
+                            String description,
+                            Integer prepCookTime,
+                            Integer cookTime,
+                            Integer numService) {
         this.title = title;
         this.description = description;
         this.prepCookTime = prepCookTime;
-        this.totalCookTime = totalCookTime;
+        this.cookTime = cookTime;
         this.numService = numService;
     }
 
@@ -49,12 +52,12 @@ public class RecipeRequestDto {
         this.prepCookTime = prepCookTime;
     }
 
-    public Integer getTotalCookTime() {
-        return totalCookTime;
+    public Integer getCookTime() {
+        return cookTime;
     }
 
-    public void setTotalCookTime(Integer totalCookTime) {
-        this.totalCookTime = totalCookTime;
+    public void setCookTime(Integer totalCookTime) {
+        this.cookTime = totalCookTime;
     }
 
     public Integer getNumService() {
@@ -69,12 +72,16 @@ public class RecipeRequestDto {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         RecipeRequestDto that = (RecipeRequestDto) o;
-        return Objects.equals(title, that.title) && Objects.equals(description, that.description) && Objects.equals(prepCookTime, that.prepCookTime) && Objects.equals(totalCookTime, that.totalCookTime) && Objects.equals(numService, that.numService);
+        return Objects.equals(title, that.title) &&
+                Objects.equals(description, that.description) &&
+                Objects.equals(prepCookTime, that.prepCookTime) &&
+                Objects.equals(cookTime, that.cookTime) &&
+                Objects.equals(numService, that.numService);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, description, prepCookTime, totalCookTime, numService);
+        return Objects.hash(title, description, prepCookTime, cookTime, numService);
     }
 
     @Override
@@ -83,7 +90,7 @@ public class RecipeRequestDto {
                 "title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", prepCookTime=" + prepCookTime +
-                ", totalCookTime=" + totalCookTime +
+                ", cookTime=" + cookTime +
                 ", numService=" + numService +
                 '}';
     }

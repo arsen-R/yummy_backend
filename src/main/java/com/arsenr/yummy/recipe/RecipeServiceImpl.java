@@ -1,9 +1,11 @@
 package com.arsenr.yummy.recipe;
 
 import com.arsenr.yummy.common.PageResponse;
+import com.arsenr.yummy.section.*;
 import com.arsenr.yummy.user.User;
 import com.arsenr.yummy.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,20 +16,25 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
+@Slf4j
 public class RecipeServiceImpl implements RecipeService {
     private final RecipeRepository recipeRepository;
     private final RecipeMapper recipeMapper;
     private final UserRepository userRepository;
+    private final SectionMapper sectionMapper;
 
     public RecipeServiceImpl(
             RecipeRepository recipeRepository,
             RecipeMapper recipeMapper,
-            UserRepository userRepository) {
+            UserRepository userRepository,
+            SectionMapper sectionMapper) {
         this.recipeRepository = recipeRepository;
         this.recipeMapper = recipeMapper;
         this.userRepository = userRepository;
+        this.sectionMapper = sectionMapper;
     }
 
 
@@ -80,7 +87,7 @@ public class RecipeServiceImpl implements RecipeService {
         recipe.setDescription(recipeRequestDto.getDescription());
         recipe.setNumService(recipeRequestDto.getNumService());
         recipe.setPrepCookTime(recipeRequestDto.getPrepCookTime());
-        recipe.setCookTime(recipeRequestDto.getTotalCookTime());
+        recipe.setCookTime(recipeRequestDto.getCookTime());
 
         return recipeMapper.recipeToRecipeResponseDto(recipeRepository.save(recipe));
     }
@@ -89,5 +96,13 @@ public class RecipeServiceImpl implements RecipeService {
     public void deleteRecipeById(Long recipeId, UserDetails userDetails) {
         recipeRepository.delete(recipeRepository.findRecipeById(recipeId)
                 .orElseThrow(() -> new EntityNotFoundException("No recipe found with id: " + recipeId)));
+    }
+
+    @Override
+    public List<SectionResponseDto> getSectionByRecipeId(Long recipeId) {
+        Recipe recipe =  recipeRepository.findRecipeById(recipeId)
+                .orElseThrow(() -> new EntityNotFoundException("No recipe found with id: " + recipeId));
+        List<Section> sections = recipe.getSections();
+        return sections.stream().map(sectionMapper::sectionToSectionResponseDto).toList();
     }
 }

@@ -1,12 +1,15 @@
 package com.arsenr.yummy.recipe;
 
 import com.arsenr.yummy.common.PageResponse;
+import com.arsenr.yummy.section.SectionResponseDto;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/recipe")
@@ -53,5 +56,11 @@ public class RecipeController {
                                              @AuthenticationPrincipal UserDetails userDetails) {
         recipeService.deleteRecipeById(recipeId, userDetails);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{recipeId}/sections")
+    public ResponseEntity<List<SectionResponseDto>> getSectionsByRecipeId(@Valid @PathVariable Long recipeId) {
+        var result = recipeService.getSectionByRecipeId(recipeId);
+        return ResponseEntity.ok().body(result);
     }
 }

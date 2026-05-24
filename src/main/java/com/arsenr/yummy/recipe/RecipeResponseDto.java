@@ -1,6 +1,5 @@
 package com.arsenr.yummy.recipe;
 
-import com.arsenr.yummy.user.UserDto;
 import lombok.Builder;
 
 import java.time.Instant;
@@ -12,11 +11,10 @@ public class RecipeResponseDto {
     private String title;
     private String description;
     private Integer prepCookTime;
-    private Integer totalCookTime;
+    private Integer cookTime;
     private Integer numService;
     private Instant createdAt;
     private Instant updatedAt;
-    private UserDto createdBy;
 
     public Long getId() {
         return id;
@@ -50,12 +48,12 @@ public class RecipeResponseDto {
         this.prepCookTime = prepCookTime;
     }
 
-    public Integer getTotalCookTime() {
-        return totalCookTime;
+    public Integer getCookTime() {
+        return cookTime;
     }
 
-    public void setTotalCookTime(Integer totalCookTime) {
-        this.totalCookTime = totalCookTime;
+    public void setCookTime(Integer cookTime) {
+        this.cookTime = cookTime;
     }
 
     public Integer getNumService() {
@@ -82,24 +80,23 @@ public class RecipeResponseDto {
         this.updatedAt = updatedAt;
     }
 
-    public UserDto getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(UserDto createdBy) {
-        this.createdBy = createdBy;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         RecipeResponseDto that = (RecipeResponseDto) o;
-        return Objects.equals(id, that.id) && Objects.equals(title, that.title) && Objects.equals(description, that.description) && Objects.equals(prepCookTime, that.prepCookTime) && Objects.equals(totalCookTime, that.totalCookTime) && Objects.equals(numService, that.numService) && Objects.equals(createdAt, that.createdAt) && Objects.equals(updatedAt, that.updatedAt) && Objects.equals(createdBy, that.createdBy);
+        return Objects.equals(id, that.id) &&
+                Objects.equals(title, that.title) &&
+                Objects.equals(description, that.description) &&
+                Objects.equals(prepCookTime, that.prepCookTime) &&
+                Objects.equals(cookTime, that.cookTime) &&
+                Objects.equals(numService, that.numService) &&
+                Objects.equals(createdAt, that.createdAt) &&
+                Objects.equals(updatedAt, that.updatedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, description, prepCookTime, totalCookTime, numService, createdAt, updatedAt, createdBy);
+        return Objects.hash(id, title, description, prepCookTime, cookTime, numService, createdAt, updatedAt);
     }
 
     @Override
@@ -109,11 +106,10 @@ public class RecipeResponseDto {
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", prepCookTime=" + prepCookTime +
-                ", totalCookTime=" + totalCookTime +
+                ", totalCookTime=" + cookTime +
                 ", numService=" + numService +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
-                ", createdBy=" + createdBy +
                 '}';
     }
 }

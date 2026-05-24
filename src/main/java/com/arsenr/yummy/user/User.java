@@ -351,7 +351,6 @@ public class User implements UserDetails {
                 ", isCredentialsNonExpired=" + isCredentialsNonExpired +
                 ", isEnabled=" + isEnabled +
                 ", role=" + roles +
-                ", recipes= " + recipes +
                 '}';
     }
 
