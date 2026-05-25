@@ -93,9 +93,6 @@ public class SectionServiceImpl implements SectionService {
     @Override
     @Transactional
     public SectionResponseDto updateSectionById(Long recipeId, Long sectionId, SectionRequestDto sectionRequestDto) {
-//        Recipe recipe = recipeRepository.findRecipeById(recipeId)
-//                .orElseThrow(() -> new EntityNotFoundException("No recipe found with id: " + recipeId));
-
         Section existingSection = sectionRepository.findSectionById(sectionId)
                 .orElseThrow(() -> new EntityNotFoundException("No section found with id: " + sectionId));
 

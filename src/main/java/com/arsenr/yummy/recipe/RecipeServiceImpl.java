@@ -1,7 +1,6 @@
 package com.arsenr.yummy.recipe;
 
 import com.arsenr.yummy.common.PageResponse;
-import com.arsenr.yummy.section.*;
 import com.arsenr.yummy.user.User;
 import com.arsenr.yummy.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -24,17 +22,14 @@ public class RecipeServiceImpl implements RecipeService {
     private final RecipeRepository recipeRepository;
     private final RecipeMapper recipeMapper;
     private final UserRepository userRepository;
-    private final SectionService sectionService;
 
     public RecipeServiceImpl(
             RecipeRepository recipeRepository,
             RecipeMapper recipeMapper,
-            UserRepository userRepository,
-            SectionService sectionService) {
+            UserRepository userRepository) {
         this.recipeRepository = recipeRepository;
         this.recipeMapper = recipeMapper;
         this.userRepository = userRepository;
-        this.sectionService = sectionService;
     }
 
 
@@ -96,10 +91,5 @@ public class RecipeServiceImpl implements RecipeService {
     public void deleteRecipeById(Long recipeId, UserDetails userDetails) {
         recipeRepository.delete(recipeRepository.findRecipeById(recipeId)
                 .orElseThrow(() -> new EntityNotFoundException("No recipe found with id: " + recipeId)));
-    }
-
-    @Override
-    public List<SectionResponseDto> getSectionByRecipeId(Long recipeId) {
-        return sectionService.getSectionByRecipeId(recipeId);
     }
 }
