@@ -24,17 +24,17 @@ public class RecipeServiceImpl implements RecipeService {
     private final RecipeRepository recipeRepository;
     private final RecipeMapper recipeMapper;
     private final UserRepository userRepository;
-    private final SectionMapper sectionMapper;
+    private final SectionService sectionService;
 
     public RecipeServiceImpl(
             RecipeRepository recipeRepository,
             RecipeMapper recipeMapper,
             UserRepository userRepository,
-            SectionMapper sectionMapper) {
+            SectionService sectionService) {
         this.recipeRepository = recipeRepository;
         this.recipeMapper = recipeMapper;
         this.userRepository = userRepository;
-        this.sectionMapper = sectionMapper;
+        this.sectionService = sectionService;
     }
 
 
@@ -100,9 +100,6 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public List<SectionResponseDto> getSectionByRecipeId(Long recipeId) {
-        Recipe recipe =  recipeRepository.findRecipeById(recipeId)
-                .orElseThrow(() -> new EntityNotFoundException("No recipe found with id: " + recipeId));
-        List<Section> sections = recipe.getSections();
-        return sections.stream().map(sectionMapper::sectionToSectionResponseDto).toList();
+        return sectionService.getSectionByRecipeId(recipeId);
     }
 }
