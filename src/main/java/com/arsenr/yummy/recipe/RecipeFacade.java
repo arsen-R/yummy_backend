@@ -7,6 +7,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -43,7 +44,7 @@ public class RecipeFacade {
             sectionService.deleteSectionById(existingSection.getId());
         }
 
-        List<SectionResponseDto> updatedSections = List.of();
+        List<SectionResponseDto> updatedSections = new ArrayList<>();
         if (fullRecipeRequestDto.getSections() != null && !fullRecipeRequestDto.getSections().isEmpty()) {
             updatedSections = sectionService.createSectionsByRecipeId(recipeId, fullRecipeRequestDto.getSections());
         }

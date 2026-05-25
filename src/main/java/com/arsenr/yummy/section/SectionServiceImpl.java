@@ -114,7 +114,8 @@ public class SectionServiceImpl implements SectionService {
     @Override
     @Transactional
     public void deleteSectionById(Long sectionId) {
-        sectionRepository.delete(sectionRepository.findSectionById(sectionId)
-                .orElseThrow(() -> new EntityNotFoundException("No section found with id: " + sectionId)));
+        Section section = sectionRepository.findSectionById(sectionId).orElseThrow(() -> new EntityNotFoundException("No section found with id: " + sectionId));
+        section.getRecipe().removeSection(section);
+        sectionRepository.delete(section);
     }
 }
