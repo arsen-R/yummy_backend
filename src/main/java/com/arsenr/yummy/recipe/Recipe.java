@@ -221,6 +221,8 @@ public class Recipe {
                 ", numService=" + numService +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
+                ", owner=" + owner +
+                ", sections=" + sections +
                 '}';
     }
 }
