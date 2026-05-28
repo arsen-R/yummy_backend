@@ -4,6 +4,7 @@ import com.arsenr.yummy.common.PageResponse;
 import com.arsenr.yummy.user.User;
 import com.arsenr.yummy.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@Slf4j
 public class RecipeServiceImpl implements RecipeService {
     private final RecipeRepository recipeRepository;
     private final RecipeMapper recipeMapper;
@@ -80,7 +82,7 @@ public class RecipeServiceImpl implements RecipeService {
         recipe.setDescription(recipeRequestDto.getDescription());
         recipe.setNumService(recipeRequestDto.getNumService());
         recipe.setPrepCookTime(recipeRequestDto.getPrepCookTime());
-        recipe.setCookTime(recipeRequestDto.getTotalCookTime());
+        recipe.setCookTime(recipeRequestDto.getCookTime());
 
         return recipeMapper.recipeToRecipeResponseDto(recipeRepository.save(recipe));
     }

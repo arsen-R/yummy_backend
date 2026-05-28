@@ -79,4 +79,6 @@ public class GlobalExceptionHandler {
                 e.getMessage()
         );
     }
+
+    //PSQLException
 }

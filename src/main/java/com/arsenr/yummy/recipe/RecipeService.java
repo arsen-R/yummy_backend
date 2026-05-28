@@ -3,8 +3,6 @@ package com.arsenr.yummy.recipe;
 import com.arsenr.yummy.common.PageResponse;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.List;
-
 public interface RecipeService {
     PageResponse<RecipeResponseDto> getAllRecipes(int page, int size);
     RecipeResponseDto getRecipeById(Long recipeId);

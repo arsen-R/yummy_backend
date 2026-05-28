@@ -1,6 +1,7 @@
 package com.arsenr.yummy.section;
 
 import com.arsenr.yummy.recipe.Recipe;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -13,6 +14,7 @@ import java.util.Objects;
 public class Section {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "section_id")
     private Long id;
     private String sectionName;
     private Integer position;
@@ -24,7 +26,8 @@ public class Section {
     @JoinColumn(name = "recipe_id", nullable = false)
     private Recipe recipe;
 
-    public Section() {}
+    public Section() {
+    }
 
     public Section(String sectionName, Integer position) {
         this.sectionName = sectionName;
@@ -102,12 +105,16 @@ public class Section {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Section section = (Section) o;
-        return Objects.equals(id, section.id) && Objects.equals(sectionName, section.sectionName) && Objects.equals(position, section.position) && Objects.equals(createdAt, section.createdAt) && Objects.equals(updatedAt, section.updatedAt) && Objects.equals(recipe, section.recipe);
+        return Objects.equals(id, section.id) &&
+                Objects.equals(sectionName, section.sectionName) &&
+                Objects.equals(position, section.position) &&
+                Objects.equals(createdAt, section.createdAt) &&
+                Objects.equals(updatedAt, section.updatedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, sectionName, position, createdAt, updatedAt, recipe);
+        return Objects.hash(id, sectionName, position, createdAt, updatedAt);
     }
 
     @Override
@@ -118,7 +125,6 @@ public class Section {
                 ", position=" + position +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
-                ", recipe=" + recipe +
                 '}';
     }
 }

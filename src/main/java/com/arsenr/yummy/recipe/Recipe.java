@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -21,8 +22,11 @@ public class Recipe {
     private String title;
     @Column(length = 1000)
     private String description;
+    @Column(nullable = false)
     private Integer prepCookTime;
+    @Column(nullable = false)
     private Integer cookTime;
+    @Column(nullable = false)
     private Integer numService;
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
@@ -34,12 +38,21 @@ public class Recipe {
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Section> sections;
+    private List<Section> sections = new ArrayList<>();
 
     public Recipe() {
     }
 
-    public Recipe(Long id, String title, String description, Integer prepCookTime, Integer cookTime, Integer numService, Instant createdAt, Instant updatedAt, User owner, List<Section> sections) {
+    public Recipe(Long id,
+                  String title,
+                  String description,
+                  Integer prepCookTime,
+                  Integer cookTime,
+                  Integer numService,
+                  Instant createdAt,
+                  Instant updatedAt,
+                  User owner,
+                  List<Section> sections) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -52,7 +65,15 @@ public class Recipe {
         this.sections = sections;
     }
 
-    public Recipe(String title, String description, Integer prepCookTime,  Integer cookTime, Integer numService, Instant createdAt, Instant updatedAt, User owner, List<Section> sections) {
+    public Recipe(String title,
+                  String description,
+                  Integer prepCookTime,
+                  Integer cookTime,
+                  Integer numService,
+                  Instant createdAt,
+                  Instant updatedAt,
+                  User owner,
+                  List<Section> sections) {
         this.title = title;
         this.description = description;
         this.prepCookTime = prepCookTime;
@@ -64,7 +85,13 @@ public class Recipe {
         this.sections = sections;
     }
 
-    public Recipe(String title, String description, Integer prepCookTime,  Integer cookTime, Integer numService, User owner, List<Section> sections) {
+    public Recipe(String title,
+                  String description,
+                  Integer prepCookTime,
+                  Integer cookTime,
+                  Integer numService,
+                  User owner,
+                  List<Section> sections) {
         this.title = title;
         this.description = description;
         this.prepCookTime = prepCookTime;
@@ -96,14 +123,6 @@ public class Recipe {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Integer getTotalTimeMinutes() {
-        return cookTime;
-    }
-
-    public void setTotalTimeMinutes(Integer totalTimeMinutes) {
-        this.cookTime = totalTimeMinutes;
     }
 
     public Integer getNumService() {
@@ -142,8 +161,8 @@ public class Recipe {
         return cookTime;
     }
 
-    public void setCookTime(Integer totalCookTime) {
-        this.cookTime = totalCookTime;
+    public void setCookTime(Integer cookTime) {
+        this.cookTime = cookTime;
     }
 
     public User getOwner() {
@@ -162,6 +181,16 @@ public class Recipe {
         this.sections = sections;
     }
 
+    public void addSection(Section section) {
+        sections.add(section);
+        section.setRecipe(this);
+    }
+
+    public void removeSection(Section section) {
+        sections.remove(section);
+        section.setRecipe(null);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
@@ -173,14 +202,12 @@ public class Recipe {
                 Objects.equals(cookTime, recipe.cookTime) &&
                 Objects.equals(numService, recipe.numService) &&
                 Objects.equals(createdAt, recipe.createdAt) &&
-                Objects.equals(updatedAt, recipe.updatedAt) &&
-                Objects.equals(owner, recipe.owner) &&
-                Objects.equals(sections, recipe.sections);
+                Objects.equals(updatedAt, recipe.updatedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, description, prepCookTime, cookTime, numService, createdAt, updatedAt,  owner, sections);
+        return Objects.hash(id, title, description, prepCookTime, cookTime, numService, createdAt, updatedAt);
     }
 
     @Override
