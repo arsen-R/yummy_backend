@@ -32,3 +32,19 @@ application:
       refresh-token:
         expiration: 1296000000
         cookie-name: refresh-jwt-cookie
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+      base-path: /actuator
+    endpoint:
+      health:
+        show-details: when-authorized
+        show-components: always
+    health:
+      circuitbreakers:
+        enabled: true
+      ratelimiters:
+          enabled: true
