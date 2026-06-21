@@ -14,8 +14,8 @@ import java.util.Set;
 @AllArgsConstructor
 public class TokenValidationResponse {
     private boolean valid;
-    private String  email;
+    private String email;
     private Set<Role> roles;
     private long expiresIn;
-    private String  message;
+    private String message;
 }

@@ -3,6 +3,7 @@ package com.arsenr.yummy.handler;
 import com.arsenr.yummy.exception.TokenException;
 import com.arsenr.yummy.exception.UserRegistrationException;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -49,6 +50,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleUsernameNotFoundException(UsernameNotFoundException e) {
         log.warn("User Not Found Exception: ", e);
         return ErrorResponse.builder()
@@ -60,6 +62,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(TokenException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorResponse handleTokenException(TokenException e) {
         log.warn("Token Exception: ", e);
         return ErrorResponse.builder()
@@ -80,5 +83,26 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleIllegalArgument(IllegalArgumentException e) {
+        log.warn("Illegal Argument Exception: ", e);
+        return ErrorResponse.of(
+                HttpStatus.CONFLICT.value(),
+                HttpStatus.CONFLICT.getReasonPhrase(),
+                e.getMessage()
+        );
+    }
+
+    @ExceptionHandler(MalformedJwtException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorResponse handleMalformedJwtException(MalformedJwtException e) {
+        log.warn("Malformed JWT Exception: ", e);
+        return ErrorResponse.of(
+                HttpStatus.UNAUTHORIZED.value(),
+                HttpStatus.UNAUTHORIZED.getReasonPhrase(),
+                e.getMessage()
+        );
+    }
     //PSQLException
 }

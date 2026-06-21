@@ -1,9 +1,16 @@
 package com.arsenr.yummy.auth;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 import java.util.Objects;
 
 public class SignInRequest {
+    @Email
     private String email;
+    @NotBlank(message = "Password shouldn't be blank")
+    @Size(min = 8, message = "Password should contain at least 8 characters")
     private String password;
 
     public SignInRequest() {}
