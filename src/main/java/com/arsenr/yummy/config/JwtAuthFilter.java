@@ -1,10 +1,13 @@
 package com.arsenr.yummy.config;
 
 import com.arsenr.yummy.jwt.JwtService;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +19,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
+@Slf4j
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
@@ -30,12 +34,26 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         StringBuilder jwtToken = new StringBuilder();
         StringBuilder username = new StringBuilder();
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+        if (authHeader != null && authHeader.startsWith("Bearer")) {
             jwtToken.append(authHeader.substring(7));
-            username.append(jwtService.extractUsername(jwtToken.toString()));
+            try {
+                username.append(jwtService.extractUsername(jwtToken.toString()));
+            } catch (NullPointerException e) {
+                log.error("Null pointer exception: ", e);
+            } catch (IllegalArgumentException e) {
+                log.error("Illegal Argument while fetching the username!!");
+            } catch (ExpiredJwtException e) {
+                log.error("Given jwt token is expired!!");
+            } catch (MalformedJwtException e) {
+                log.error("Some changed has done in token!! Invalid Token");
+            } catch (Exception e) {
+                log.error("An exception occurred while fetching the username !!");
+            }
+        } else {
+            log.error("Invalid Header Value!");
         }
 
-        if (!username.isEmpty() && username.toString().equals(jwtService.extractUsername(jwtToken.toString()))) {
+        if (!username.isEmpty() && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username.toString());
             if (jwtService.validateToken(jwtToken.toString(), userDetails)) {
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
