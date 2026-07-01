@@ -18,18 +18,19 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     @Value("${application.security.jwt.refresh-token.expiration}")
     private long refreshTokenExpiration;
 
-    private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtService jwtService;
 
-    public RefreshTokenServiceImpl(UserRepository userRepository, RefreshTokenRepository refreshTokenRepository, JwtService jwtService) {
-        this.userRepository = userRepository;
+    public RefreshTokenServiceImpl(RefreshTokenRepository refreshTokenRepository, JwtService jwtService) {
         this.refreshTokenRepository = refreshTokenRepository;
         this.jwtService = jwtService;
     }
 
     @Override
     public RefreshToken createRefreshToken(User user) {
+        if (user == null) {
+            throw new IllegalArgumentException("User must not be null");
+        }
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setUser(user);
         refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenExpiration));
@@ -73,6 +74,9 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     @Transactional
     @Override
     public RefreshToken rotateRefreshToken(RefreshToken old) {
+        if (old == null) {
+            throw new IllegalArgumentException("Refresh token must not be null");
+        }
         refreshTokenRepository.delete(old);
         return createRefreshToken(old.getUser());
     }
