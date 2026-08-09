@@ -4,9 +4,10 @@ spring:
   application:
     name: Yummy
   datasource:
-    url: jdbc:postgresql://localhost:5432/yummy
-    username: arsen
-    password: 29486
+    name: postgres
+    url: jdbc:postgresql:localhost:5432/yummy
+    username: ${POSTGRES_USER:arsen}
+    password: ${POSTGRES_PASSWORD:29486}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -22,6 +23,16 @@ spring:
   springdoc:
     api-docs:
       enabled: false
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          description:
+            sql:
+              BasicBinder: TRACE
 
 application:
   security:
@@ -47,4 +58,4 @@ management:
       circuitbreakers:
         enabled: true
       ratelimiters:
-          enabled: true
+        enabled: true
